@@ -1,6 +1,9 @@
 package main
 
-import "github.com/bagusyanuar/go-yousee/config"
+import (
+	"github.com/bagusyanuar/go-yousee/app/server"
+	"github.com/bagusyanuar/go-yousee/config"
+)
 
 func main() {
 	cfg, err := config.NewConfig(".env")
@@ -17,4 +20,5 @@ func main() {
 	if cfg.AppMode == "dev" {
 		db = db.Debug()
 	}
+	server.Listen(cfg, db)
 }
