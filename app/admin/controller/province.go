@@ -3,8 +3,10 @@ package controller
 import (
 	"strconv"
 
+	"github.com/bagusyanuar/go-yousee/app/admin/request"
 	"github.com/bagusyanuar/go-yousee/app/admin/service"
 	"github.com/bagusyanuar/go-yousee/common"
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -20,6 +22,7 @@ func NewProvince(provinceSvc service.ProvinceService, r fiber.Router) Province {
 func (ctrl *Province) Routes() {
 	group := ctrl.router.Group("/province")
 	group.Get("/", ctrl.GetAllData)
+	group.Post("/", ctrl.Create)
 }
 
 func (ctrl *Province) GetAllData(ctx *fiber.Ctx) error {
@@ -48,5 +51,21 @@ func (ctrl *Province) GetAllData(ctx *fiber.Ctx) error {
 		Meta: map[string]interface{}{
 			"pagination": meta,
 		},
+	})
+}
+
+func (ctrl *Province) Create(ctx *fiber.Ctx) error {
+
+	var request request.ProvinceRequest
+
+	validate := validator.New()
+	errs := validate.Struct(request)
+	if errs != nil {
+
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(common.APIResponse{
+		Code:    fiber.StatusOK,
+		Message: "success",
 	})
 }
