@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/bagusyanuar/go-yousee/app/admin"
 	"github.com/bagusyanuar/go-yousee/common"
 	"github.com/bagusyanuar/go-yousee/config"
 	"github.com/gofiber/fiber/v2"
@@ -25,6 +26,9 @@ func Listen(cfg *config.Config, db *gorm.DB) {
 		})
 	})
 
+	api := app.Group("/api")
+	adminBuilder := admin.NewBuilder(db, cfg, api)
+	adminBuilder.Build()
 	app.Use(func(c *fiber.Ctx) error {
 		return c.Status(http.StatusNotFound).JSON(common.APIResponse{
 			Code:    http.StatusNotFound,

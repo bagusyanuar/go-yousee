@@ -12,7 +12,6 @@ func main() {
 	}
 
 	db, err := config.NewMySQLConnection(&cfg.MySQL)
-
 	if err != nil {
 		panic(err)
 	}

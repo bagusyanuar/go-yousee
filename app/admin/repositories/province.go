@@ -17,17 +17,36 @@ type Province struct {
 
 // Count implements ProvinceRepository.
 func (r *Province) Count(name string) (int64, error) {
-	panic("unimplemented")
+	n := "%" + name + "%"
+	var totalRows int64
+	if err := r.database.
+		Model(&model.Province{}).
+		Where("name LIKE ?", n).
+		Count(&totalRows).Error; err != nil {
+		return 0, err
+	}
+	return totalRows, nil
 }
 
 // GetData implements ProvinceRepository.
 func (r *Province) GetData(name string, limit int, offset int) ([]model.Province, error) {
-	panic("unimplemented")
+	n := "%" + name + "%"
+	var data []model.Province
+	if err := r.database.
+		Where("name LIKE ?", n).Offset(offset).Limit(limit).
+		Find(&data).Error; err != nil {
+		return data, err
+	}
+	return data, nil
 }
 
 // GetDataByID implements ProvinceRepository.
 func (r *Province) GetDataByID(id string) (*model.Province, error) {
-	panic("unimplemented")
+	data := new(model.Province)
+	if err := r.database.Where("id = ?", id).First(&data).Error; err != nil {
+		return nil, err
+	}
+	return data, nil
 }
 
 func NewProvince(db *gorm.DB) ProvinceRepository {

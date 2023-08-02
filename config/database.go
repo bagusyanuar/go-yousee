@@ -17,6 +17,7 @@ func NewMySQLConnection(cfg *MySQL) (*gorm.DB, error) {
 		cfg.Name,
 	)
 	gormDB, err := gorm.Open(mysql.Open(dsn), option)
+
 	if err != nil {
 		return nil, err
 	}
