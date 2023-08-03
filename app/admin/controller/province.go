@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/bagusyanuar/go-yousee/app/admin/request"
@@ -58,14 +59,31 @@ func (ctrl *Province) Create(ctx *fiber.Ctx) error {
 
 	var request request.ProvinceRequest
 
-	validate := validator.New()
-	errs := validate.Struct(request)
-	if errs != nil {
+	if err := ctx.BodyParser(&request); err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(common.APIResponse{
+			Code:    fiber.StatusInternalServerError,
+			Message: fmt.Sprintf("internal server error : %s", err.Error()),
+		})
 
 	}
 
+	// validate form request
+	validate := validator.New()
+	v := &common.CustomValidator{
+		Validator: validate,
+	}
+
+	if errs := v.Validate(&request); len(errs) > 0 {
+		// eMessages := v.TranslateError(errs)
+		return ctx.Status(fiber.StatusBadRequest).JSON(common.APIResponse{
+			Code:    fiber.StatusBadRequest,
+			Message: "invalid request",
+			Data:    errs,
+		})
+	}
 	return ctx.Status(fiber.StatusOK).JSON(common.APIResponse{
 		Code:    fiber.StatusOK,
 		Message: "success",
+		Data:    &request,
 	})
 }
