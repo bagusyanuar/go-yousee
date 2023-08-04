@@ -25,22 +25,26 @@ func (b *Builder) Build() {
 	cityRepositoy := repositories.NewCity(b.Database)
 	typeRepository := repositories.NewType(b.Database)
 	vendorRepository := repositories.NewVendor(b.Database)
+	itemRepository := repositories.NewItem(b.Database)
 
 	provinceService := service.NewProvince(provinceRepository)
 	cityService := service.NewCity(cityRepositoy)
 	typeService := service.NewType(typeRepository)
 	vendorService := service.NewVendor(vendorRepository)
+	itemService := service.NewItem(itemRepository)
 
 	provinceController := controller.NewProvince(provinceService, b.Router)
 	cityController := controller.NewCity(cityService, b.Router)
 	typeController := controller.NewType(typeService, b.Router)
 	vendorController := controller.NewVendor(vendorService, b.Router)
+	itemController := controller.NewItem(itemService, b.Router)
 
 	controllers := []any{
 		&provinceController,
 		&cityController,
 		&typeController,
 		&vendorController,
+		&itemController,
 	}
 
 	common.RegisterRoutes(controllers...)

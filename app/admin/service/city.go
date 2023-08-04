@@ -10,14 +10,16 @@ import (
 	"github.com/google/uuid"
 )
 
-type CityService interface {
-	GetData(name string, page, perPage int) (common.Pagination, error)
-	Create(request request.CityRequest) (*model.City, error)
-}
+type (
+	CityService interface {
+		GetData(name string, page, perPage int) (common.Pagination, error)
+		Create(request request.CityRequest) (*model.City, error)
+	}
 
-type City struct {
-	cityRepository repositories.CityRepository
-}
+	City struct {
+		cityRepository repositories.CityRepository
+	}
+)
 
 // Create implements CityService.
 func (svc *City) Create(request request.CityRequest) (*model.City, error) {

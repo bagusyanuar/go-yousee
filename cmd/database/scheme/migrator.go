@@ -9,6 +9,7 @@ func prepareTable() []interface{} {
 		&City{},
 		&Type{},
 		&Vendor{},
+		&Item{},
 	}
 }
 func Migrate(db *gorm.DB) {
