@@ -37,3 +37,17 @@ type Type struct {
 	Icon string    `gorm:"column:icon;type:text;" json:"icon"`
 	common.WithTimestampsModel
 }
+
+type Vendor struct {
+	ID      uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;primaryKey;" json:"id"`
+	Name    string    `gorm:"column:name;type:varchar(255);not null;" json:"name"`
+	Address string    `gorm:"type:text;" json:"address"`
+	Phone   string    `gorm:"type:varchar(25);" json:"phone"`
+	Brand   string    `gorm:"type:varchar(255);" json:"brand"`
+	common.WithTimestampsModel
+}
+
+type Item struct {
+	ID     uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;primaryKey;" json:"id"`
+	CityID uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;index:idx_province_id;not null" json:"province_id"`
+}
