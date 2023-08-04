@@ -4,16 +4,27 @@ import (
 	"math"
 
 	"github.com/bagusyanuar/go-yousee/app/admin/repositories"
+	"github.com/bagusyanuar/go-yousee/app/admin/request"
 	"github.com/bagusyanuar/go-yousee/common"
 	"github.com/bagusyanuar/go-yousee/model"
 )
 
 type ProvinceService interface {
 	GetData(name string, page, perPage int) (common.Pagination, error)
+	Create(request request.ProvinceRequest) (*model.Province, error)
 }
 
 type Province struct {
 	provinceRepository repositories.ProvinceRepository
+}
+
+// Create implements ProvinceService.
+func (svc *Province) Create(request request.ProvinceRequest) (*model.Province, error) {
+	entity := model.Province{
+		Name: request.Name,
+		Code: request.Code,
+	}
+	return svc.provinceRepository.Create(entity)
 }
 
 // GetData implements ProvinceService.

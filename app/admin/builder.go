@@ -22,13 +22,21 @@ func NewBuilder(db *gorm.DB, cfg *config.Config, router fiber.Router) Builder {
 
 func (b *Builder) Build() {
 	provinceRepository := repositories.NewProvince(b.Database)
+	cityRepositoy := repositories.NewCity(b.Database)
+	typeRepository := repositories.NewType(b.Database)
 
 	provinceService := service.NewProvince(provinceRepository)
+	cityService := service.NewCity(cityRepositoy)
+	typeService := service.NewType(typeRepository)
 
 	provinceController := controller.NewProvince(provinceService, b.Router)
+	cityController := controller.NewCity(cityService, b.Router)
+	typeController := controller.NewType(typeService, b.Router)
 
 	controllers := []any{
 		&provinceController,
+		&cityController,
+		&typeController,
 	}
 
 	common.RegisterRoutes(controllers...)

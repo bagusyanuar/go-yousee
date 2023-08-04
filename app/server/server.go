@@ -17,7 +17,11 @@ func Listen(cfg *config.Config, db *gorm.DB) {
 	app := fiber.New(fiber.Config{
 		TrustedProxies: []string{"127.0.0.1", "localhost"},
 	})
-	app.Use(recover.New())
+
+	app.Use(recover.New(recover.Config{
+		EnableStackTrace: true,
+	}))
+
 	app.Use(logger.New())
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(map[string]interface{}{

@@ -3,16 +3,26 @@ package repositories
 import (
 	"github.com/bagusyanuar/go-yousee/model"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type ProvinceRepository interface {
 	GetData(name string, limit, offset int) ([]model.Province, error)
 	GetDataByID(id string) (*model.Province, error)
 	Count(name string) (int64, error)
+	Create(entity model.Province) (*model.Province, error)
 }
 
 type Province struct {
 	database *gorm.DB
+}
+
+// Create implements ProvinceRepository.
+func (r *Province) Create(entity model.Province) (*model.Province, error) {
+	if err := r.database.Omit(clause.Associations).Create(&entity).Error; err != nil {
+		return nil, err
+	}
+	return &entity, nil
 }
 
 // Count implements ProvinceRepository.

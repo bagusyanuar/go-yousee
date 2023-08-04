@@ -20,6 +20,7 @@ func NewProvince(provinceSvc service.ProvinceService, r fiber.Router) Province {
 	return Province{provinceService: provinceSvc, router: r}
 }
 
+// province endpoint route
 func (ctrl *Province) Routes() {
 	group := ctrl.router.Group("/province")
 	group.Get("/", ctrl.GetAllData)
@@ -74,16 +75,24 @@ func (ctrl *Province) Create(ctx *fiber.Ctx) error {
 	}
 
 	if errs := v.Validate(&request); len(errs) > 0 {
-		// eMessages := v.TranslateError(errs)
 		return ctx.Status(fiber.StatusBadRequest).JSON(common.APIResponse{
 			Code:    fiber.StatusBadRequest,
 			Message: "invalid request",
 			Data:    errs,
 		})
 	}
+
+	data, err := ctrl.provinceService.Create(request)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(common.APIResponse{
+			Code:    fiber.StatusInternalServerError,
+			Message: fmt.Sprintf("internal server error : %s", err.Error()),
+		})
+	}
+
 	return ctx.Status(fiber.StatusOK).JSON(common.APIResponse{
 		Code:    fiber.StatusOK,
 		Message: "success",
-		Data:    &request,
+		Data:    data,
 	})
 }

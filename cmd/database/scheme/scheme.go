@@ -25,7 +25,7 @@ type Province struct {
 type City struct {
 	ID         uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;primaryKey;" json:"id"`
 	ProvinceID uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;index:idx_province_id;not null" json:"province_id"`
-	Code       string    `gorm:"column:code;type:char(4);index:idx_code,unique;" json:"code"`
+	Code       string    `gorm:"column:code;type:char(6);index:idx_code,unique;" json:"code"`
 	Name       string    `gorm:"column:name;type:varchar(255);not null;" json:"name"`
 	Province   Province  `gorm:"foreignKey:ProvinceID" json:"province"`
 	common.WithTimestampsModel
