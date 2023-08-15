@@ -38,9 +38,11 @@ func (svc *City) GetDataByID(id string) (*model.City, error) {
 
 // Patch implements CityService.
 func (svc *City) Patch(id string, request request.CityRequest) (*model.City, error) {
+	provinceID, _ := uuid.Parse(request.ProvinceID)
 	entity := model.City{
-		Name: cases.Title(language.Indonesian, cases.Compact).String(request.Name),
-		Code: request.Code,
+		ProvinceID: provinceID,
+		Name:       cases.Title(language.Indonesian, cases.Compact).String(request.Name),
+		Code:       request.Code,
 	}
 	return svc.cityRepository.Patch(id, entity)
 }
@@ -50,7 +52,7 @@ func (svc *City) Create(request request.CityRequest) (*model.City, error) {
 	provinceID, _ := uuid.Parse(request.ProvinceID)
 	entity := model.City{
 		ProvinceID: provinceID,
-		Name:       request.Name,
+		Name:       cases.Title(language.Indonesian, cases.Compact).String(request.Name),
 		Code:       request.Code,
 	}
 	return svc.cityRepository.Create(entity)

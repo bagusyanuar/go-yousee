@@ -18,7 +18,7 @@ type City struct {
 	Code       string    `json:"code"`
 	Name       string    `json:"name"`
 	common.WithTimestampsModel
-	Province *Province `gorm:"foreignKey:ProvinceID" json:"province"`
+	Province *Province `gorm:"foreignKey:ProvinceID" json:"province,omitempty"`
 	// use omitempty if wont show on preload
 	// Province *Province `gorm:"foreignKey:ProvinceID" json:"province,omitempty"`
 }

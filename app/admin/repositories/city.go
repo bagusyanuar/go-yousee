@@ -63,7 +63,7 @@ func (r *City) GetData(name string, limit int, offset int) ([]model.City, error)
 	n := "%" + name + "%"
 	var data []model.City
 	if err := r.database.
-		Where("name LIKE ?", n).Offset(offset).Limit(limit).Preload("Province").
+		Where("name LIKE ?", n).Order("code ASC").Offset(offset).Limit(limit).Preload("Province").
 		Find(&data).Error; err != nil {
 		return data, err
 	}

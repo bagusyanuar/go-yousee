@@ -12,13 +12,37 @@ import (
 type (
 	VendorService interface {
 		GetData(name string, page, perPage int) (common.Pagination, error)
+		GetDataByID(id string) (*model.Vendor, error)
 		Create(request request.VendorRequest) (*model.Vendor, error)
+		Patch(id string, request request.VendorRequest) (*model.Vendor, error)
+		Delete(id string) error
 	}
 
 	Vendor struct {
 		vendorRepository repositories.VendorRepository
 	}
 )
+
+// Delete implements VendorService.
+func (svc *Vendor) Delete(id string) error {
+	return svc.vendorRepository.Delete(id)
+}
+
+// GetDataByID implements VendorService.
+func (svc *Vendor) GetDataByID(id string) (*model.Vendor, error) {
+	return svc.vendorRepository.GetDataByID(id)
+}
+
+// Patch implements VendorService.
+func (svc *Vendor) Patch(id string, request request.VendorRequest) (*model.Vendor, error) {
+	entity := model.Vendor{
+		Name:    request.Name,
+		Address: request.Address,
+		Phone:   request.Phone,
+		Brand:   request.Brand,
+	}
+	return svc.vendorRepository.Patch(id, entity)
+}
 
 // Create implements VendorService.
 func (svc *Vendor) Create(request request.VendorRequest) (*model.Vendor, error) {

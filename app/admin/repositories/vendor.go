@@ -12,12 +12,30 @@ type (
 		GetDataByID(id string) (*model.Vendor, error)
 		Count(name string) (int64, error)
 		Create(entity model.Vendor) (*model.Vendor, error)
+		Patch(id string, entity model.Vendor) (*model.Vendor, error)
+		Delete(id string) error
 	}
 
 	Vendor struct {
 		database *gorm.DB
 	}
 )
+
+// Delete implements VendorRepository.
+func (r *Vendor) Delete(id string) error {
+	if err := r.database.Where("id = ?", id).Delete(&model.Vendor{}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// Patch implements VendorRepository.
+func (r *Vendor) Patch(id string, entity model.Vendor) (*model.Vendor, error) {
+	if err := r.database.Omit(clause.Associations).Where("id = ?", id).Updates(entity).Error; err != nil {
+		return nil, err
+	}
+	return &entity, nil
+}
 
 // Count implements VendorRepository.
 func (r *Vendor) Count(name string) (int64, error) {
