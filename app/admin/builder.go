@@ -23,26 +23,26 @@ func NewBuilder(db *gorm.DB, cfg *config.Config, router fiber.Router) Builder {
 func (b *Builder) Build() {
 	provinceRepository := repositories.NewProvince(b.Database)
 	cityRepositoy := repositories.NewCity(b.Database)
-	typeRepository := repositories.NewType(b.Database)
+	mediaTypeRepository := repositories.NewMediaType(b.Database)
 	vendorRepository := repositories.NewVendor(b.Database)
 	itemRepository := repositories.NewItem(b.Database)
 
 	provinceService := service.NewProvince(provinceRepository)
 	cityService := service.NewCity(cityRepositoy)
-	typeService := service.NewType(typeRepository)
+	mediaTypeService := service.NewMediaType(mediaTypeRepository)
 	vendorService := service.NewVendor(vendorRepository)
 	itemService := service.NewItem(itemRepository)
 
 	provinceController := controller.NewProvince(provinceService, b.Router)
 	cityController := controller.NewCity(cityService, b.Router)
-	typeController := controller.NewType(typeService, b.Router)
+	mediaTypeController := controller.NewMediaType(mediaTypeService, b.Router)
 	vendorController := controller.NewVendor(vendorService, b.Router)
 	itemController := controller.NewItem(itemService, b.Router)
 
 	controllers := []any{
 		&provinceController,
 		&cityController,
-		&typeController,
+		&mediaTypeController,
 		&vendorController,
 		&itemController,
 	}

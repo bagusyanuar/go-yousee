@@ -7,7 +7,7 @@ func prepareTable() []interface{} {
 		&User{},
 		&Province{},
 		&City{},
-		&Type{},
+		&MediaType{},
 		&Vendor{},
 		&Item{},
 	}
@@ -15,4 +15,9 @@ func prepareTable() []interface{} {
 func Migrate(db *gorm.DB) {
 	tables := prepareTable()
 	db.AutoMigrate(tables...)
+}
+
+func Drop(db *gorm.DB) {
+	tables := prepareTable()
+	db.Migrator().DropTable(tables...)
 }

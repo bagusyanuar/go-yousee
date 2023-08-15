@@ -31,9 +31,10 @@ type City struct {
 	common.WithTimestampsModel
 }
 
-type Type struct {
+type MediaType struct {
 	ID   uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;primaryKey;" json:"id"`
 	Name string    `gorm:"column:name;type:varchar(255);not null;" json:"name"`
+	Slug string    `gorm:"column:slug;type:varchar(255);" json:"slug"`
 	Icon string    `gorm:"column:icon;type:text;" json:"icon"`
 	common.WithTimestampsModel
 }
@@ -60,7 +61,7 @@ type Item struct {
 	Width     float64   `gorm:"type:decimal(10,2);default:0.0" json:"width"`
 	Height    float64   `gorm:"type:decimal(10,2);default:0.0" json:"height"`
 	common.WithTimestampsModel
-	City   City   `gorm:"foreignKey:CityID" json:"city"`
-	Type   Type   `gorm:"foreignKey:TypeID" json:"type"`
-	Vendor Vendor `gorm:"foreignKey:VendorID" json:"vendor"`
+	City      City      `gorm:"foreignKey:CityID" json:"city"`
+	MediaType MediaType `gorm:"foreignKey:TypeID" json:"media_type"`
+	Vendor    Vendor    `gorm:"foreignKey:VendorID" json:"vendor"`
 }
