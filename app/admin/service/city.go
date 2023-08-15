@@ -8,18 +8,42 @@ import (
 	"github.com/bagusyanuar/go-yousee/common"
 	"github.com/bagusyanuar/go-yousee/model"
 	"github.com/google/uuid"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type (
 	CityService interface {
 		GetData(name string, page, perPage int) (common.Pagination, error)
+		GetDataByID(id string) (*model.City, error)
 		Create(request request.CityRequest) (*model.City, error)
+		Patch(id string, request request.CityRequest) (*model.City, error)
+		Delete(id string) error
 	}
 
 	City struct {
 		cityRepository repositories.CityRepository
 	}
 )
+
+// Delete implements CityService.
+func (svc *City) Delete(id string) error {
+	return svc.cityRepository.Delete(id)
+}
+
+// GetDataByID implements CityService.
+func (svc *City) GetDataByID(id string) (*model.City, error) {
+	return svc.cityRepository.GetDataByID(id)
+}
+
+// Patch implements CityService.
+func (svc *City) Patch(id string, request request.CityRequest) (*model.City, error) {
+	entity := model.City{
+		Name: cases.Title(language.Indonesian, cases.Compact).String(request.Name),
+		Code: request.Code,
+	}
+	return svc.cityRepository.Patch(id, entity)
+}
 
 // Create implements CityService.
 func (svc *City) Create(request request.CityRequest) (*model.City, error) {

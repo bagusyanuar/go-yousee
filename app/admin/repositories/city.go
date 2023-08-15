@@ -12,12 +12,30 @@ type (
 		GetDataByID(id string) (*model.City, error)
 		Count(name string) (int64, error)
 		Create(entity model.City) (*model.City, error)
+		Patch(id string, entity model.City) (*model.City, error)
+		Delete(id string) error
 	}
 
 	City struct {
 		database *gorm.DB
 	}
 )
+
+// Delete implements CityRepository.
+func (r *City) Delete(id string) error {
+	if err := r.database.Where("id = ?", id).Delete(&model.City{}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// Patch implements CityRepository.
+func (r *City) Patch(id string, entity model.City) (*model.City, error) {
+	if err := r.database.Omit(clause.Associations).Where("id = ?", id).Updates(entity).Error; err != nil {
+		return nil, err
+	}
+	return &entity, nil
+}
 
 // Count implements CityRepository.
 func (r *City) Count(name string) (int64, error) {

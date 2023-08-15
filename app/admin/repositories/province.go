@@ -11,10 +11,28 @@ type ProvinceRepository interface {
 	GetDataByID(id string) (*model.Province, error)
 	Count(name string) (int64, error)
 	Create(entity model.Province) (*model.Province, error)
+	Patch(id string, entity model.Province) (*model.Province, error)
+	Delete(id string) error
 }
 
 type Province struct {
 	database *gorm.DB
+}
+
+// Delete implements ProvinceRepository.
+func (r *Province) Delete(id string) error {
+	if err := r.database.Where("id = ?", id).Delete(&model.Province{}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// Patch implements ProvinceRepository.
+func (r *Province) Patch(id string, entity model.Province) (*model.Province, error) {
+	if err := r.database.Omit(clause.Associations).Where("id = ?", id).Updates(entity).Error; err != nil {
+		return nil, err
+	}
+	return &entity, nil
 }
 
 // Create implements ProvinceRepository.

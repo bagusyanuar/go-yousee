@@ -11,6 +11,8 @@ import (
 	"github.com/bagusyanuar/go-yousee/model"
 	"github.com/google/uuid"
 	"github.com/gosimple/slug"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 const (
@@ -35,7 +37,7 @@ type (
 func (svc *MediaType) Patch(id string, request request.MediaTypeRequest) (*model.MediaType, error) {
 	icon := new(string)
 	entity := model.MediaType{
-		Name: request.Name,
+		Name: cases.Title(language.Indonesian, cases.Compact).String(request.Name),
 		Slug: slug.Make(request.Name),
 	}
 
@@ -90,7 +92,7 @@ func (svc *MediaType) Create(request request.MediaTypeRequest) (*model.MediaType
 		}
 	}
 	entity := model.MediaType{
-		Name: request.Name,
+		Name: cases.Title(language.Indonesian, cases.Compact).String(request.Name),
 		Icon: icon,
 		Slug: slug.Make(request.Name),
 	}

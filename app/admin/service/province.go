@@ -7,21 +7,45 @@ import (
 	"github.com/bagusyanuar/go-yousee/app/admin/request"
 	"github.com/bagusyanuar/go-yousee/common"
 	"github.com/bagusyanuar/go-yousee/model"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type ProvinceService interface {
 	GetData(name string, page, perPage int) (common.Pagination, error)
+	GetDataByID(id string) (*model.Province, error)
 	Create(request request.ProvinceRequest) (*model.Province, error)
+	Patch(id string, request request.ProvinceRequest) (*model.Province, error)
+	Delete(id string) error
 }
 
 type Province struct {
 	provinceRepository repositories.ProvinceRepository
 }
 
+// Delete implements ProvinceService.
+func (svc *Province) Delete(id string) error {
+	return svc.provinceRepository.Delete(id)
+}
+
+// Patch implements ProvinceService.
+func (svc *Province) Patch(id string, request request.ProvinceRequest) (*model.Province, error) {
+	entity := model.Province{
+		Name: cases.Title(language.Indonesian, cases.Compact).String(request.Name),
+		Code: request.Code,
+	}
+	return svc.provinceRepository.Patch(id, entity)
+}
+
+// GetDataByID implements ProvinceService.
+func (svc *Province) GetDataByID(id string) (*model.Province, error) {
+	return svc.provinceRepository.GetDataByID(id)
+}
+
 // Create implements ProvinceService.
 func (svc *Province) Create(request request.ProvinceRequest) (*model.Province, error) {
 	entity := model.Province{
-		Name: request.Name,
+		Name: cases.Title(language.Indonesian, cases.Compact).String(request.Name),
 		Code: request.Code,
 	}
 	return svc.provinceRepository.Create(entity)
