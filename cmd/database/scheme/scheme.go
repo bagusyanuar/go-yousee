@@ -65,3 +65,24 @@ type Item struct {
 	MediaType MediaType `gorm:"foreignKey:MediaTypeID" json:"media_type"`
 	Vendor    Vendor    `gorm:"foreignKey:VendorID" json:"vendor"`
 }
+
+type durationUnit string
+
+const (
+	DAY   durationUnit = "day"
+	WEEK  durationUnit = "week"
+	MONTH durationUnit = "month"
+	YEAR  durationUnit = "year"
+)
+
+type Project struct {
+	ID           uuid.UUID      `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;primaryKey;" json:"id"`
+	Name         string         `gorm:"column:name;type:varchar(255);not null;" json:"name"`
+	ClientName   string         `gorm:"column:client_name;type:varchar(255);not null;" json:"client_name"`
+	RequestDate  datatypes.Date `gorm:"type:date" json:"request_date"`
+	Description  string         `gorm:"type:text" json:"description"`
+	Duration     uint           `gorm:"type:int(11);default=0" json:"duration"`
+	DurationUnit durationUnit   `gorm:"type:enum('day', 'week', 'month', 'year);not null;" json:"duration_unit"`
+	Status       uint8          `gorm:"type:smallint(6);default=0" json:"status"`
+	common.WithTimestampsModel
+}
