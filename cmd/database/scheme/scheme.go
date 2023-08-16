@@ -49,19 +49,19 @@ type Vendor struct {
 }
 
 type Item struct {
-	ID        uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;primaryKey;" json:"id"`
-	CityID    uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;index:idx_city_id;not null" json:"city_id"`
-	TypeID    uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;index:idx_type_id;not null" json:"type_id"`
-	VendorID  uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;index:idx_vendor_id;not null" json:"vendor_id"`
-	Name      string    `gorm:"column:name;type:varchar(255);not null;" json:"name"`
-	Address   string    `gorm:"type:text;not null;" json:"address"`
-	Latitude  float64   `gorm:"type:decimal(10,8);" json:"latitude"`
-	Longitude float64   `gorm:"type:decimal(10,8);" json:"longitude"`
-	Position  uint8     `gorm:"type:smallint;not null;default:0" json:"position"`
-	Width     float64   `gorm:"type:decimal(10,2);default:0.0" json:"width"`
-	Height    float64   `gorm:"type:decimal(10,2);default:0.0" json:"height"`
+	ID          uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;primaryKey;" json:"id"`
+	CityID      uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;index:idx_city_id;not null" json:"city_id"`
+	MediaTypeID uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;index:idx_media_type_id;not null" json:"media_type_id"`
+	VendorID    uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;index:idx_vendor_id;not null" json:"vendor_id"`
+	Name        string    `gorm:"column:name;type:varchar(255);not null;" json:"name"`
+	Address     string    `gorm:"type:text;not null;" json:"address"`
+	Latitude    float64   `gorm:"type:decimal(10,8);" json:"latitude"`
+	Longitude   float64   `gorm:"type:decimal(10,8);" json:"longitude"`
+	Position    uint8     `gorm:"type:smallint;not null;default:0" json:"position"`
+	Width       float64   `gorm:"type:decimal(10,2);default:0.0" json:"width"`
+	Height      float64   `gorm:"type:decimal(10,2);default:0.0" json:"height"`
 	common.WithTimestampsModel
 	City      City      `gorm:"foreignKey:CityID" json:"city"`
-	MediaType MediaType `gorm:"foreignKey:TypeID" json:"media_type"`
+	MediaType MediaType `gorm:"foreignKey:MediaTypeID" json:"media_type"`
 	Vendor    Vendor    `gorm:"foreignKey:VendorID" json:"vendor"`
 }

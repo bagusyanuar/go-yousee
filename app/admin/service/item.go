@@ -8,12 +8,17 @@ import (
 	"github.com/bagusyanuar/go-yousee/common"
 	"github.com/bagusyanuar/go-yousee/model"
 	"github.com/google/uuid"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type (
 	ItemService interface {
 		GetData(name string, page, perPage int) (common.Pagination, error)
+		GetDataByID(id string) (*model.Item, error)
 		Create(request request.ItemRequest) (*model.Item, error)
+		Patch(id string, request request.ItemRequest) (*model.Item, error)
+		Delete(id string) error
 	}
 
 	Item struct {
@@ -21,23 +26,54 @@ type (
 	}
 )
 
+// Delete implements ItemService.
+func (svc *Item) Delete(id string) error {
+	return svc.itemRepository.Delete(id)
+}
+
+// GetDataByID implements ItemService.
+func (svc *Item) GetDataByID(id string) (*model.Item, error) {
+	return svc.itemRepository.GetDataByID(id)
+}
+
+// Patch implements ItemService.
+func (svc *Item) Patch(id string, request request.ItemRequest) (*model.Item, error) {
+	cityID, _ := uuid.Parse(request.CityID)
+	vendorID, _ := uuid.Parse(request.VendorID)
+	mediaTypeID, _ := uuid.Parse(request.MediaTypeID)
+
+	entity := model.Item{
+		CityID:      cityID,
+		VendorID:    vendorID,
+		MediaTypeID: mediaTypeID,
+		Name:        cases.Title(language.Indonesian, cases.Compact).String(request.Name),
+		Address:     request.Address,
+		Latitude:    request.Latitude,
+		Longitude:   request.Longitude,
+		Position:    request.Position,
+		Width:       request.Width,
+		Height:      request.Height,
+	}
+	return svc.itemRepository.Patch(id, entity)
+}
+
 // Create implements ItemService.
 func (svc *Item) Create(request request.ItemRequest) (*model.Item, error) {
 	cityID, _ := uuid.Parse(request.CityID)
 	vendorID, _ := uuid.Parse(request.VendorID)
-	typeID, _ := uuid.Parse(request.TypeID)
+	mediaTypeID, _ := uuid.Parse(request.MediaTypeID)
 
 	entity := model.Item{
-		CityID:    cityID,
-		VendorID:  vendorID,
-		TypeID:    typeID,
-		Name:      request.Name,
-		Address:   request.Address,
-		Latitude:  request.Latitude,
-		Longitude: request.Longitude,
-		Position:  request.Position,
-		Width:     request.Width,
-		Height:    request.Height,
+		CityID:      cityID,
+		VendorID:    vendorID,
+		MediaTypeID: mediaTypeID,
+		Name:        cases.Title(language.Indonesian, cases.Compact).String(request.Name),
+		Address:     request.Address,
+		Latitude:    request.Latitude,
+		Longitude:   request.Longitude,
+		Position:    request.Position,
+		Width:       request.Width,
+		Height:      request.Height,
 	}
 	return svc.itemRepository.Create(entity)
 }
