@@ -46,7 +46,9 @@ func (r *Project) GetData(name string, limit int, offset int) ([]model.Project, 
 	var data []model.Project
 	if err := r.database.
 		Where("name LIKE ?", n).
-		Preload("Items").
+		Preload("Items.Item").
+		Preload("Items.City").
+		Preload("Items.Pic").
 		Offset(offset).
 		Limit(limit).
 		Find(&data).Error; err != nil {

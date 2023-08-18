@@ -13,12 +13,12 @@ const (
 )
 
 type ProjectItem struct {
-	ID          uuid.UUID `json:"id"`
-	ProjectID   uuid.UUID `json:"project_id"`
-	CityID      uuid.UUID `json:"city_id"`
-	ItemID      uuid.UUID `json:"item_id"`
-	PicID       uuid.UUID `json:"pic_id"`
-	VendorPrice int64     `json:"vendor_price"`
+	ID          uuid.UUID  `json:"id"`
+	ProjectID   *uuid.UUID `json:"project_id"`
+	CityID      uuid.UUID  `json:"city_id"`
+	ItemID      *uuid.UUID `json:"item_id"`
+	PicID       uuid.UUID  `json:"pic_id"`
+	VendorPrice int64      `json:"vendor_price"`
 	common.WithTimestampsModel
 	Project *Project `gorm:"foreignKey:ProjectID" json:"project,omitempty"`
 	City    *City    `gorm:"foreignKey:CityID" json:"city,omitempty"`

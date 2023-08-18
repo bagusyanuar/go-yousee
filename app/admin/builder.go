@@ -27,6 +27,7 @@ func (b *Builder) Build() {
 	vendorRepository := repositories.NewVendor(b.Database)
 	itemRepository := repositories.NewItem(b.Database)
 	projectRepository := repositories.NewProject(b.Database)
+	projectItemRepository := repositories.NewProjectItem(b.Database)
 
 	provinceService := service.NewProvince(provinceRepository)
 	cityService := service.NewCity(cityRepositoy)
@@ -34,6 +35,7 @@ func (b *Builder) Build() {
 	vendorService := service.NewVendor(vendorRepository)
 	itemService := service.NewItem(itemRepository)
 	projectService := service.NewProject(projectRepository)
+	projectItemService := service.NewProjectItem(projectItemRepository)
 
 	provinceController := controller.NewProvince(provinceService, b.Router)
 	cityController := controller.NewCity(cityService, b.Router)
@@ -41,6 +43,7 @@ func (b *Builder) Build() {
 	vendorController := controller.NewVendor(vendorService, b.Router)
 	itemController := controller.NewItem(itemService, b.Router)
 	projectController := controller.NewProject(projectService, b.Router)
+	projectItemController := controller.NewProjectItem(projectItemService, b.Router)
 
 	controllers := []any{
 		&provinceController,
@@ -49,6 +52,7 @@ func (b *Builder) Build() {
 		&vendorController,
 		&itemController,
 		&projectController,
+		&projectItemController,
 	}
 
 	common.RegisterRoutes(controllers...)
