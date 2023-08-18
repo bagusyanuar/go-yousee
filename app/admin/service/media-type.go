@@ -35,13 +35,14 @@ type (
 
 // Patch implements MediaTypeService.
 func (svc *MediaType) Patch(id string, request request.MediaTypeRequest) (*model.MediaType, error) {
-	icon := new(string)
+
 	entity := model.MediaType{
 		Name: cases.Title(language.Indonesian, cases.Compact).String(request.Name),
 		Slug: slug.Make(request.Name),
 	}
 
 	if request.Icon != nil {
+		icon := new(string)
 		fileSystem := common.FileSystem{
 			File: request.Icon,
 		}
