@@ -71,10 +71,12 @@ type Project struct {
 	Name         string              `gorm:"column:name;type:varchar(255);not null;" json:"name"`
 	ClientName   string              `gorm:"column:client_name;type:varchar(255);not null;" json:"client_name"`
 	RequestDate  datatypes.Date      `gorm:"type:date" json:"request_date"`
+	Qty          uint                `gorm:"type:int(11);default:0" json:"qty"`
 	Description  string              `gorm:"type:text" json:"description"`
 	Duration     uint                `gorm:"type:int(11);default:0" json:"duration"`
 	DurationUnit common.DurationUnit `gorm:"type:enum('day', 'week', 'month', 'year');not null;" json:"duration_unit"`
-	Status       uint8               `gorm:"type:smallint(6);default=0" json:"status"`
+	IsLightOn    bool                `gorm:"type:boolean;default:false" json:"is_light_on"`
+	Status       uint8               `gorm:"type:smallint(6);default:0" json:"status"`
 	common.WithTimestampsModel
 }
 

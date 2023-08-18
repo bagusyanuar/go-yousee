@@ -18,9 +18,11 @@ type Project struct {
 	Name         string              `json:"name"`
 	ClientName   string              `json:"client_name"`
 	RequestDate  datatypes.Date      `json:"request_date"`
+	Qty          uint                `json:"qty"`
 	Description  string              `json:"description"`
 	Duration     uint                `json:"duration"`
 	DurationUnit common.DurationUnit `json:"duration_unit"`
+	IsLightOn    bool                `json:"is_light_on"`
 	Status       uint8               `json:"status"`
 	common.WithTimestampsModel
 	Items []*ProjectItem `gorm:"foreignKey:ProjectID" json:"items"`
