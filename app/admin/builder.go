@@ -26,18 +26,21 @@ func (b *Builder) Build() {
 	mediaTypeRepository := repositories.NewMediaType(b.Database)
 	vendorRepository := repositories.NewVendor(b.Database)
 	itemRepository := repositories.NewItem(b.Database)
+	projectRepository := repositories.NewProject(b.Database)
 
 	provinceService := service.NewProvince(provinceRepository)
 	cityService := service.NewCity(cityRepositoy)
 	mediaTypeService := service.NewMediaType(mediaTypeRepository)
 	vendorService := service.NewVendor(vendorRepository)
 	itemService := service.NewItem(itemRepository)
+	projectService := service.NewProject(projectRepository)
 
 	provinceController := controller.NewProvince(provinceService, b.Router)
 	cityController := controller.NewCity(cityService, b.Router)
 	mediaTypeController := controller.NewMediaType(mediaTypeService, b.Router)
 	vendorController := controller.NewVendor(vendorService, b.Router)
 	itemController := controller.NewItem(itemService, b.Router)
+	projectController := controller.NewProject(projectService, b.Router)
 
 	controllers := []any{
 		&provinceController,
@@ -45,6 +48,7 @@ func (b *Builder) Build() {
 		&mediaTypeController,
 		&vendorController,
 		&itemController,
+		&projectController,
 	}
 
 	common.RegisterRoutes(controllers...)

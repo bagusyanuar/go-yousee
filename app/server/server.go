@@ -25,7 +25,7 @@ func Listen(cfg *config.Config, db *gorm.DB) {
 	app.Use(logger.New())
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(map[string]interface{}{
-			"app_name":    "go-olin-bags-backend",
+			"app_name":    "go-yousee-backend",
 			"app_version": "1.0.0",
 		})
 	})

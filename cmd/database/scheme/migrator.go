@@ -10,6 +10,8 @@ func prepareTable() []interface{} {
 		&MediaType{},
 		&Vendor{},
 		&Item{},
+		&Project{},
+		&ProjectItem{},
 	}
 }
 func Migrate(db *gorm.DB) {

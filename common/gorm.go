@@ -11,3 +11,12 @@ type WithTimestampsModel struct {
 	UpdatedAt time.Time      `gorm:"column:updated_at;not null" json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at;" json:"deleted_at"`
 }
+
+type DurationUnit string
+
+const (
+	DAY   DurationUnit = "day"
+	WEEK  DurationUnit = "week"
+	MONTH DurationUnit = "month"
+	YEAR  DurationUnit = "year"
+)
