@@ -42,7 +42,7 @@ func (svc *MediaType) Patch(id string, request request.MediaTypeRequest) (*model
 	}
 
 	if request.Icon != nil {
-		icon := new(string)
+
 		fileSystem := common.FileSystem{
 			File: request.Icon,
 		}
@@ -52,12 +52,11 @@ func (svc *MediaType) Patch(id string, request request.MediaTypeRequest) (*model
 
 		ext := filepath.Ext(request.Icon.Filename)
 		fileName := fmt.Sprintf("%s/%s%s", IconPath, uuid.New().String(), ext)
-		icon = &fileName
 		err := fileSystem.Upload(fileName)
 		if err != nil {
 			return nil, err
 		}
-		entity.Icon = icon
+		entity.Icon = &fileName
 	}
 
 	return svc.mediaTypeRepository.Patch(id, entity)
@@ -75,6 +74,7 @@ func (svc *MediaType) GetDataByID(id string) (*model.MediaType, error) {
 
 // Create implements TypeService.
 func (svc *MediaType) Create(request request.MediaTypeRequest) (*model.MediaType, error) {
+
 	icon := new(string)
 	if request.Icon != nil {
 		fileSystem := common.FileSystem{
