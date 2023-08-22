@@ -26,6 +26,7 @@ func (b *Builder) Build() {
 	mediaTypeRepository := repositories.NewMediaType(b.Database)
 	vendorRepository := repositories.NewVendor(b.Database)
 	itemRepository := repositories.NewItem(b.Database)
+	itemImageRepository := repositories.NewItemImage(b.Database)
 	projectRepository := repositories.NewProject(b.Database)
 	projectItemRepository := repositories.NewProjectItem(b.Database)
 
@@ -34,6 +35,7 @@ func (b *Builder) Build() {
 	mediaTypeService := service.NewMediaType(mediaTypeRepository)
 	vendorService := service.NewVendor(vendorRepository)
 	itemService := service.NewItem(itemRepository)
+	itemImageService := service.NewItemImage(itemImageRepository)
 	projectService := service.NewProject(projectRepository)
 	projectItemService := service.NewProjectItem(projectItemRepository)
 
@@ -42,6 +44,7 @@ func (b *Builder) Build() {
 	mediaTypeController := controller.NewMediaType(mediaTypeService, b.Router)
 	vendorController := controller.NewVendor(vendorService, b.Router)
 	itemController := controller.NewItem(itemService, b.Router)
+	itemImageController := controller.NewItemImage(itemImageService, b.Router)
 	projectController := controller.NewProject(projectService, b.Router)
 	projectItemController := controller.NewProjectItem(projectItemService, b.Router)
 
@@ -53,6 +56,7 @@ func (b *Builder) Build() {
 		&itemController,
 		&projectController,
 		&projectItemController,
+		&itemImageController,
 	}
 
 	common.RegisterRoutes(controllers...)
