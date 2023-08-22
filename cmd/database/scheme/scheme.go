@@ -93,3 +93,12 @@ type ProjectItem struct {
 	Item    Item    `gorm:"foreignKey:ItemID" json:"item"`
 	Pic     User    `gorm:"foreignKey:PicID" json:"pic"`
 }
+
+type ItemImage struct {
+	ID     uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;primaryKey;" json:"id"`
+	ItemID uuid.UUID `gorm:"type:char(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin;index:idx_item_id;not null" json:"item_id"`
+	Type   uint8     `gorm:"type:smallint;not null;default:0" json:"type"`
+	Image  string    `gorm:"type:text;not null;" json:"image"`
+	common.WithTimestampsModel
+	Item Item `gorm:"foreignKey:ItemID" json:"item"`
+}

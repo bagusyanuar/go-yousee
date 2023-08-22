@@ -12,6 +12,7 @@ func prepareTable() []interface{} {
 		&Item{},
 		&Project{},
 		&ProjectItem{},
+		&ItemImage{},
 	}
 }
 func Migrate(db *gorm.DB) {

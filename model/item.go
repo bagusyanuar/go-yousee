@@ -25,9 +25,10 @@ type Item struct {
 	Width       float64   `json:"width"`
 	Height      float64   `json:"height"`
 	common.WithTimestampsModel
-	City      *City      `gorm:"foreignKey:CityID" json:"city,omitempty"`
-	MediaType *MediaType `gorm:"foreignKey:MediaTypeID" json:"media_type,omitempty"`
-	Vendor    *Vendor    `gorm:"foreignKey:VendorID" json:"vendor,omitempty"`
+	City      *City       `gorm:"foreignKey:CityID" json:"city,omitempty"`
+	MediaType *MediaType  `gorm:"foreignKey:MediaTypeID" json:"media_type,omitempty"`
+	Vendor    *Vendor     `gorm:"foreignKey:VendorID" json:"vendor,omitempty"`
+	Images    []ItemImage `gorm:"foreignKey:ItemID" json:"images,omitempty"`
 }
 
 func (item *Item) BeforeCreate(tx *gorm.DB) (err error) {
