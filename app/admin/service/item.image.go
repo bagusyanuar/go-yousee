@@ -43,7 +43,8 @@ func (svc *ItemImage) Create(request request.ItemImageRequest) (*model.ItemImage
 		break
 	case err := <-errorCheckPath:
 		close(errorCheckPath)
-		fmt.Println("error chech path" + err.Error())
+		fmt.Println("error check path" + err.Error())
+		return nil, err
 	}
 
 	return nil, nil
