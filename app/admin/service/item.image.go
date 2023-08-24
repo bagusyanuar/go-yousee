@@ -1,14 +1,15 @@
 package service
 
 import (
-	"errors"
 	"fmt"
-	"sync"
+	"path/filepath"
 
 	"github.com/bagusyanuar/go-yousee/app/admin/repositories"
 	"github.com/bagusyanuar/go-yousee/app/admin/request"
 	"github.com/bagusyanuar/go-yousee/common"
 	"github.com/bagusyanuar/go-yousee/model"
+	"github.com/google/uuid"
+	"golang.org/x/sync/errgroup"
 )
 
 type (
@@ -22,53 +23,58 @@ type (
 	}
 )
 
-// Create implements ImageItemService.
-func (svc *ItemImage) Create(request request.ItemImageRequest) (*model.ItemImage, error) {
-	errorCheckPath := make(chan error)
-	wgCheckpathDone := make(chan bool)
-
-	var wg sync.WaitGroup
-	for i := 0; i < 5; i++ {
-		wg.Add(1)
-		go svc.checkPath(i, &wg, errorCheckPath)
-	}
-
-	go func() {
-		wg.Wait()
-		close(wgCheckpathDone)
-	}()
-
-	select {
-	case <-wgCheckpathDone:
-		break
-	case err := <-errorCheckPath:
-		close(errorCheckPath)
-		fmt.Println("error check path" + err.Error())
-		return nil, err
-	}
-
-	return nil, nil
-}
-
 const (
 	ImageThumbnailPath = "assets/item/thumbnails"
+	ImageOriginalPath  = "assets/item/originals"
 )
 
-func (svc *ItemImage) checkPath(i int, wg *sync.WaitGroup, e chan error) {
-	defer wg.Done()
-	text := fmt.Sprintf("do job %d", i)
-	fmt.Println(text)
+// Create implements ImageItemService.
+func (svc *ItemImage) Create(request request.ItemImageRequest) (*model.ItemImage, error) {
+	itemID, _ := uuid.Parse(request.ItemID)
+	var image string
+	if request.Image != nil {
+		var checkPathGroup errgroup.Group
+		paths := []string{ImageOriginalPath, ImageThumbnailPath}
+		fileSystem := common.FileSystem{
+			File: request.Image,
+		}
+		for _, path := range paths {
+			p := path
+			checkPathGroup.Go(func() error {
 
-	if i == 1 {
-		e <- errors.New("error on 3")
-	} else {
-		fileSystem := common.FileSystem{}
-		if err := fileSystem.CheckPath(ImageThumbnailPath); err != nil {
-			e <- err
+				if err := fileSystem.CheckPath(p); err != nil {
+					return err
+				}
+				return nil
+			})
+		}
+
+		if err := checkPathGroup.Wait(); err != nil {
+			return nil, err
+		}
+
+		ext := filepath.Ext(request.Image.Filename)
+		image = fmt.Sprintf("%s%s", uuid.New().String(), ext)
+		imageAddressOriginal := fmt.Sprintf("%s/%s", ImageOriginalPath, image)
+		imageAddressThumbail := fmt.Sprintf("%s/%s", ImageThumbnailPath, image)
+		err := fileSystem.Upload(imageAddressOriginal)
+		if err != nil {
+			return nil, err
+		}
+
+		//resize thumbnail
+		errResize := fileSystem.UploadAndResize(imageAddressThumbail, 300)
+		if errResize != nil {
+			return nil, errResize
 		}
 	}
 
-	// return nil
+	entity := model.ItemImage{
+		ItemID: itemID,
+		Image:  image,
+		Type:   request.Type,
+	}
+	return svc.itemImageRepository.Create(entity)
 }
 
 // GetDataByItemID implements ImageItemService.

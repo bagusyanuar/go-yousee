@@ -3,7 +3,7 @@ package request
 import "mime/multipart"
 
 type ItemImageRequest struct {
-	ItemID        string                `json:"item_id" validate:"required,uuid4"`
-	ImageInternal *multipart.FileHeader `form:"image_internal"`
-	ImageCliet    *multipart.FileHeader `form:"image_client"`
+	ItemID string                `form:"item_id" validate:"required,uuid4"`
+	Image  *multipart.FileHeader `form:"image"`
+	Type   uint8                 `form:"type" validate:"required"`
 }

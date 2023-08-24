@@ -1,9 +1,12 @@
 package common
 
 import (
+	"image/png"
 	"io"
 	"mime/multipart"
 	"os"
+
+	"github.com/nfnt/resize"
 )
 
 type FileSystem struct {
@@ -23,6 +26,28 @@ func (fs *FileSystem) Upload(dst string) error {
 	defer out.Close()
 
 	_, err = io.Copy(out, src)
+	return err
+}
+
+func (fs *FileSystem) UploadAndResize(dst string, width uint) error {
+	src, err := fs.File.Open()
+	if err != nil {
+		return err
+	}
+	defer src.Close()
+	img, err := png.Decode(src)
+	if err != nil {
+		return err
+	}
+
+	m := resize.Resize(width, 0, img, resize.Lanczos3)
+	out, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer out.Close()
+
+	png.Encode(out, m)
 	return err
 }
 

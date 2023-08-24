@@ -11,6 +11,8 @@ require (
 	github.com/gosimple/slug v1.13.1
 	github.com/joeshaw/envdecode v0.0.0-20200121155833-099f1fc765bd
 	github.com/joho/godotenv v1.5.1
+	golang.org/x/sync v0.3.0
+	golang.org/x/text v0.11.0
 	gorm.io/datatypes v1.2.0
 	gorm.io/driver/mysql v1.5.1
 	gorm.io/gorm v1.25.2
@@ -28,6 +30,7 @@ require (
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
+	github.com/nfnt/resize v0.0.0-20180221191011-83c6a9932646 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasthttp v1.48.0 // indirect
@@ -35,5 +38,4 @@ require (
 	golang.org/x/crypto v0.11.0 // indirect
 	golang.org/x/net v0.13.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect
-	golang.org/x/text v0.11.0 // indirect
 )

@@ -18,7 +18,7 @@ type ItemImage struct {
 	Type   uint8     `json:"type"`
 	Image  string    `json:"image"`
 	common.WithTimestampsModel
-	Item Item `gorm:"foreignKey:ItemID" json:"item"`
+	Item *Item `gorm:"foreignKey:ItemID" json:"item,omitempty"`
 }
 
 func (itemImage *ItemImage) BeforeCreate(tx *gorm.DB) (err error) {
