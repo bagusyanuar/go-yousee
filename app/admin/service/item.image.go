@@ -33,7 +33,10 @@ func (svc *ItemImage) Create(request request.ItemImageRequest) (*model.ItemImage
 	itemID, _ := uuid.Parse(request.ItemID)
 	var image string
 	if request.Image != nil {
-		var checkPathGroup errgroup.Group
+		var (
+			checkPathGroup errgroup.Group
+			uploadGroup    errgroup.Group
+		)
 		paths := []string{ImageOriginalPath, ImageThumbnailPath}
 		fileSystem := common.FileSystem{
 			File: request.Image,
@@ -57,15 +60,27 @@ func (svc *ItemImage) Create(request request.ItemImageRequest) (*model.ItemImage
 		image = fmt.Sprintf("%s%s", uuid.New().String(), ext)
 		imageAddressOriginal := fmt.Sprintf("%s/%s", ImageOriginalPath, image)
 		imageAddressThumbail := fmt.Sprintf("%s/%s", ImageThumbnailPath, image)
-		err := fileSystem.Upload(imageAddressOriginal)
-		if err != nil {
-			return nil, err
-		}
 
-		//resize thumbnail
-		errResize := fileSystem.UploadAndResize(imageAddressThumbail, 100)
-		if errResize != nil {
-			return nil, errResize
+		//upload original image
+		uploadGroup.Go(func() error {
+			err := fileSystem.Upload(imageAddressOriginal)
+			if err != nil {
+				return err
+			}
+			return nil
+		})
+
+		//upload and resize thumbnail image
+		uploadGroup.Go(func() error {
+			err := fileSystem.UploadAndResize(imageAddressThumbail, 100, ext)
+			if err != nil {
+				return err
+			}
+			return nil
+		})
+
+		if err := uploadGroup.Wait(); err != nil {
+			return nil, err
 		}
 	}
 
