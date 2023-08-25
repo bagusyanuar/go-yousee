@@ -63,7 +63,7 @@ func (svc *ItemImage) Create(request request.ItemImageRequest) (*model.ItemImage
 		}
 
 		//resize thumbnail
-		errResize := fileSystem.UploadAndResize(imageAddressThumbail, 300)
+		errResize := fileSystem.UploadAndResize(imageAddressThumbail, 100)
 		if errResize != nil {
 			return nil, errResize
 		}
