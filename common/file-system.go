@@ -37,21 +37,6 @@ func (fs *FileSystem) UploadAndResize(dst string, width uint) error {
 	}
 	defer src.Close()
 
-	// buffer, err := io.ReadAll(src)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// resized, err := bimg.NewImage(buffer).Resize(int(width), 0)
-	// if err != nil {
-	// 	return err
-	// }
-
-	// compressed, err := bimg.NewImage(resized).Process(bimg.Options{Quality: 30})
-	// if err != nil {
-	// 	return err
-	// }
-	// return bimg.Write(dst, compressed)
 	img, err := png.Decode(src)
 	if err != nil {
 		return err
