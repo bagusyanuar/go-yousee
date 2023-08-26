@@ -33,55 +33,15 @@ func (svc *ItemImage) Create(request request.ItemImageRequest) (*model.ItemImage
 	itemID, _ := uuid.Parse(request.ItemID)
 	var image string
 	if request.Image != nil {
-		var (
-			checkPathGroup errgroup.Group
-			uploadGroup    errgroup.Group
-		)
 		paths := []string{ImageOriginalPath, ImageThumbnailPath}
 		fileSystem := common.FileSystem{
 			File: request.Image,
 		}
-		for _, path := range paths {
-			p := path
-			checkPathGroup.Go(func() error {
-
-				if err := fileSystem.CheckPath(p); err != nil {
-					return err
-				}
-				return nil
-			})
-		}
-
-		if err := checkPathGroup.Wait(); err != nil {
+		img, err := svc.uploadImages(fileSystem, paths...)
+		if err != nil {
 			return nil, err
 		}
-
-		ext := filepath.Ext(request.Image.Filename)
-		image = fmt.Sprintf("%s%s", uuid.New().String(), ext)
-		imageAddressOriginal := fmt.Sprintf("%s/%s", ImageOriginalPath, image)
-		imageAddressThumbail := fmt.Sprintf("%s/%s", ImageThumbnailPath, image)
-
-		//upload original image
-		uploadGroup.Go(func() error {
-			err := fileSystem.Upload(imageAddressOriginal)
-			if err != nil {
-				return err
-			}
-			return nil
-		})
-
-		//upload and resize thumbnail image
-		uploadGroup.Go(func() error {
-			err := fileSystem.UploadAndResize(imageAddressThumbail, 100, ext)
-			if err != nil {
-				return err
-			}
-			return nil
-		})
-
-		if err := uploadGroup.Wait(); err != nil {
-			return nil, err
-		}
+		image = img
 	}
 
 	entity := model.ItemImage{
@@ -97,6 +57,52 @@ func (svc *ItemImage) GetDataByItemID(id string) ([]model.ItemImage, error) {
 	panic("unimplemented")
 }
 
+func (svc *ItemImage) uploadImages(fs common.FileSystem, paths ...string) (string, error) {
+	jobGroup := errgroup.Group{}
+
+	//job group for checking image paths
+	for _, path := range paths {
+		p := path
+		jobGroup.Go(func() error {
+			if err := fs.CheckPath(p); err != nil {
+				return err
+			}
+			return nil
+		})
+	}
+
+	if err := jobGroup.Wait(); err != nil {
+		return "", err
+	}
+
+	ext := filepath.Ext(fs.File.Filename)
+	image := fmt.Sprintf("%s%s", uuid.New().String(), ext)
+	imageAddressOriginal := fmt.Sprintf("%s/%s", ImageOriginalPath, image)
+	imageAddressThumbail := fmt.Sprintf("%s/%s", ImageThumbnailPath, image)
+
+	//upload original image
+	jobGroup.Go(func() error {
+		err := fs.Upload(imageAddressOriginal)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+
+	//upload and resize thumbnail image
+	jobGroup.Go(func() error {
+		err := fs.UploadAndResize(imageAddressThumbail, 100, ext)
+		if err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err := jobGroup.Wait(); err != nil {
+		return "", err
+	}
+	return image, nil
+}
 func NewItemImage(itemImageRepo repositories.ItemImageRepository) ImageItemService {
 	return &ItemImage{
 		itemImageRepository: itemImageRepo,
