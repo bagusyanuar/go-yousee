@@ -15,6 +15,7 @@ type Config struct {
 	AppVersion string `env:"APP_VERSION"`
 	AppMode    string `env:"APP_MODE,default=dev"`
 	MySQL      MySQL
+	JWT        JWT
 }
 
 type MySQL struct {
@@ -23,6 +24,11 @@ type MySQL struct {
 	User     string `env:"DB_USER"`
 	Password string `env:"DB_PASSWORD"`
 	Name     string `env:"DB_NAME"`
+}
+
+type JWT struct {
+	Issuer       string `env:"JWT_ISSUER"`
+	SignatureKey string `env:"JWT_SIGNATURE_KEY"`
 }
 
 func NewConfig(env string) (*Config, error) {
