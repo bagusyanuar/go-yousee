@@ -60,7 +60,7 @@ func (fs *FileSystem) UploadAndResize(dst string, width uint, ext string) error 
 	// png.Encode(out, m)
 	fs.encodeImage(out, m, ext)
 
-	return err
+	return nil
 }
 
 func (fs *FileSystem) decodeImage(file multipart.File, ext string) (image.Image, error) {
