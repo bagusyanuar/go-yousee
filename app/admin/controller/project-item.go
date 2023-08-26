@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/bagusyanuar/go-yousee/app/admin/request"
@@ -8,6 +9,7 @@ import (
 	"github.com/bagusyanuar/go-yousee/common"
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 type ProjectItem struct {
@@ -90,10 +92,35 @@ func (c *ProjectItem) GetData(ctx *fiber.Ctx) error {
 	})
 }
 
+func (c *ProjectItem) GetDataByID(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	result, err := c.projectItemService.GetDataByID(id)
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return ctx.Status(fiber.StatusNotFound).JSON(common.APIResponse{
+				Code:    fiber.StatusNotFound,
+				Message: "data not found",
+				Data:    nil,
+			})
+		}
+		return ctx.Status(fiber.StatusInternalServerError).JSON(common.APIResponse{
+			Code:    fiber.StatusInternalServerError,
+			Message: err.Error(),
+			Data:    nil,
+		})
+	}
+
+	return ctx.Status(fiber.StatusOK).JSON(common.APIResponse{
+		Code:    fiber.StatusOK,
+		Message: "success",
+		Data:    result,
+	})
+}
 func (c *ProjectItem) Routes() {
 	group := c.router.Group("/project-item")
 	group.Get("/", c.GetData)
 	group.Post("/", c.Create)
+	group.Get("/:id", c.GetDataByID)
 	// group.Get("/:id", c.GetDataByID)
 	// group.Patch("/:id/patch", c.Patch)
 	// group.Delete("/:id/delete", c.Delete)

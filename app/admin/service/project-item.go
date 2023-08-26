@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"math"
 
 	"github.com/bagusyanuar/go-yousee/app/admin/repositories"
@@ -27,13 +28,20 @@ type (
 // Create implements ProjectItemService.
 func (svc *ProjectItem) Create(request request.ProjectItemRequest) (*model.ProjectItem, error) {
 	cityID, _ := uuid.Parse(request.CityID)
-	ItemID, _ := uuid.Parse(request.ItemID)
+	reqItemID, _ := uuid.Parse(request.ItemID)
 	ProjectID, _ := uuid.Parse(request.ProjectID)
 	PicID, _ := uuid.Parse(request.PicID)
 
+	itemID := new(uuid.UUID)
+	fmt.Println(itemID)
+	if reqItemID != uuid.Nil {
+		itemID = &reqItemID
+	} else {
+		itemID = nil
+	}
 	entity := model.ProjectItem{
 		CityID:      cityID,
-		ItemID:      &ItemID,
+		ItemID:      itemID,
 		ProjectID:   &ProjectID,
 		PicID:       PicID,
 		VendorPrice: request.VendorPrice,
@@ -72,7 +80,7 @@ func (svc *ProjectItem) GetData(name string, page int, perPage int) (common.Pagi
 
 // GetDataByID implements ProjectItemService.
 func (svc *ProjectItem) GetDataByID(id string) (*model.ProjectItem, error) {
-	panic("unimplemented")
+	return svc.projectItemRepository.GetDataByID(id)
 }
 
 // Patch implements ProjectItemService.

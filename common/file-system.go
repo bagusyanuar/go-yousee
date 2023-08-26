@@ -1,6 +1,9 @@
 package common
 
 import (
+	"errors"
+	"image"
+	"image/jpeg"
 	"image/png"
 	"io"
 	"mime/multipart"
@@ -29,7 +32,7 @@ func (fs *FileSystem) Upload(dst string) error {
 	return err
 }
 
-func (fs *FileSystem) UploadAndResize(dst string, width uint) error {
+func (fs *FileSystem) UploadAndResize(dst string, width uint, ext string) error {
 
 	src, err := fs.File.Open()
 	if err != nil {
@@ -37,7 +40,12 @@ func (fs *FileSystem) UploadAndResize(dst string, width uint) error {
 	}
 	defer src.Close()
 
-	img, err := png.Decode(src)
+	// img, err := png.Decode(src)
+	// if err != nil {
+	// 	return err
+	// }
+
+	img, err := fs.decodeImage(src, ext)
 	if err != nil {
 		return err
 	}
@@ -49,9 +57,44 @@ func (fs *FileSystem) UploadAndResize(dst string, width uint) error {
 	}
 	defer out.Close()
 
-	png.Encode(out, m)
+	// png.Encode(out, m)
+	fs.encodeImage(out, m, ext)
 
 	return err
+}
+
+func (fs *FileSystem) decodeImage(file multipart.File, ext string) (image.Image, error) {
+	var (
+		img image.Image
+		err error
+	)
+	switch ext {
+	case ".jpeg", ".jpg":
+		img, err = jpeg.Decode(file)
+		if err != nil {
+			return img, err
+		}
+		return img, nil
+	case ".png":
+		img, err := png.Decode(file)
+		if err != nil {
+			return img, err
+		}
+		return img, nil
+	default:
+		return nil, errors.New("unknown image type")
+	}
+}
+
+func (fs *FileSystem) encodeImage(file *os.File, img image.Image, ext string) {
+
+	switch ext {
+	case ".jpeg", ".jpg":
+		jpeg.Encode(file, img, nil)
+	case ".png":
+		png.Encode(file, img)
+	default:
+	}
 }
 
 func (fs *FileSystem) CheckPath(path string) error {
