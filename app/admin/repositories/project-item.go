@@ -12,12 +12,21 @@ type (
 		GetDataByID(id string) (*model.ProjectItem, error)
 		Count(name string) (int64, error)
 		Create(entity model.ProjectItem) (*model.ProjectItem, error)
+		Patch(id string, entity model.ProjectItem) (*model.ProjectItem, error)
 	}
 
 	ProjectItem struct {
 		database *gorm.DB
 	}
 )
+
+// Patch implements ProjectItemRepository.
+func (r *ProjectItem) Patch(id string, entity model.ProjectItem) (*model.ProjectItem, error) {
+	if err := r.database.Omit(clause.Associations).Where("id = ?", id).Updates(entity).Error; err != nil {
+		return nil, err
+	}
+	return &entity, nil
+}
 
 // Count implements ProjectItemRepository.
 func (r *ProjectItem) Count(name string) (int64, error) {

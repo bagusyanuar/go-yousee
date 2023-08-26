@@ -85,7 +85,26 @@ func (svc *ProjectItem) GetDataByID(id string) (*model.ProjectItem, error) {
 
 // Patch implements ProjectItemService.
 func (svc *ProjectItem) Patch(id string, request request.ProjectItemRequest) (*model.ProjectItem, error) {
-	panic("unimplemented")
+	cityID, _ := uuid.Parse(request.CityID)
+	reqItemID, _ := uuid.Parse(request.ItemID)
+	ProjectID, _ := uuid.Parse(request.ProjectID)
+	PicID, _ := uuid.Parse(request.PicID)
+
+	itemID := new(uuid.UUID)
+	fmt.Println(itemID)
+	if reqItemID != uuid.Nil {
+		itemID = &reqItemID
+	} else {
+		itemID = nil
+	}
+	entity := model.ProjectItem{
+		CityID:      cityID,
+		ItemID:      itemID,
+		ProjectID:   &ProjectID,
+		PicID:       PicID,
+		VendorPrice: request.VendorPrice,
+	}
+	return svc.projectItemRepository.Patch(id, entity)
 }
 
 func NewProjectItem(projectItemRepo repositories.ProjectItemRepository) ProjectItemService {
